@@ -19,9 +19,6 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash][extname]',
         manualChunks(id) {
           if (id.includes('react')) return 'react';
-          if (id.includes('features/colors')) return 'colors';
-          if (id.includes('features/spacing')) return 'spacing';
-          if (id.includes('features/typography')) return 'type';
         }
       }
     }
