@@ -1,10 +1,30 @@
-import uiHtml from '../index.html?raw';
+import htmlRaw from '../dist/index.html?raw';
+// Vite will resolve these at build-time
+// NOTE: update the CSS filename pattern to match actual output
+import uiJs from '../dist/ui.js?raw';
+const cssGlob = import.meta.glob('../dist/assets/index-*.css', {
+  as: 'raw',
+  eager: true,
+});
+
 import { hexToRgb } from './lib/colorUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const figma: any;
 
-figma.showUI(uiHtml, { width: 900, height: 700 });
+// Resolve the single CSS string from the glob
+const uiCss = (() => {
+  const first = Object.values(cssGlob)[0] as unknown as string;
+  return first || '';
+})();
+
+const inlined = htmlRaw
+  // replace the CSS link with inline <style>
+  .replace(/<link rel="stylesheet"[^>]*>/, `<style>${uiCss}</style>`)
+  // replace the module script to ui.js with inline <script>
+  .replace(/<script[^>]*src="\.\/ui\.js"[^>]*><\/script>/, `<script>${uiJs}</script>`);
+
+figma.showUI(inlined, { width: 900, height: 700 });
 
 async function getOrCreateCollection() {
   const name = 'Framework Colors';

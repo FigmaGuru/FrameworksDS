@@ -95,6 +95,8 @@ function TypographyView() {
 export default function App() {
   const [section, setSection] = useState<Section>('colors');
 
+  console.log('FrameworksDS: App mounted');
+
   return (
     <div className="flex h-screen bg-white text-slate-900">
       <Sidebar section={section} onSelect={setSection} />
